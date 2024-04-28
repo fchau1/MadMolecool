@@ -170,12 +170,14 @@ class TextDataset(Dataset):
                 self.input_ids.extend(tokens.input_ids.tolist())
 
     def __len__(self):
-        return len(self.input_ids) - self.block_size
+        # Ensure we return a non-negative value
+        return max(0, len(self.input_ids) - self.block_size + 1)
 
     def __getitem__(self, idx):
-        # Extract a sequence of tokens
+        # Ensure the index does not exceed the bounds and forms a proper sequence
         input_ids = self.input_ids[idx:idx + self.block_size]
         return {"input_ids": torch.tensor(input_ids, dtype=torch.long)}
+
 
 
 
