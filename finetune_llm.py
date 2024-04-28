@@ -75,7 +75,77 @@
 #     os.makedirs(quantized_model_path)
 # torch.save(quantized_model.state_dict(), os.path.join(quantized_model_path, 'quantized_biggest_model.pth'))
 
-from transformers import BertForMaskedLM, BertTokenizer, TextDataset, DataCollatorForLanguageModeling, Trainer, TrainingArguments
+# from transformers import BertForMaskedLM, BertTokenizer, TextDataset, DataCollatorForLanguageModeling, Trainer, TrainingArguments
+# import logging
+# from transformers import logging as hf_logging
+# import os
+# from torch.quantization import quantize_dynamic
+# import torch
+#
+# # Setup logging
+# logging.basicConfig(level=logging.INFO)
+# hf_logging.set_verbosity_info()
+# hf_logging.enable_default_handler()
+# hf_logging.enable_explicit_format()
+#
+# # Define the custom data collator for masked language modeling
+# class CustomDataCollatorForLanguageModeling(DataCollatorForLanguageModeling):
+#     def collate_batch(self, features):
+#         batch = super().collate_batch(features)
+#         batch = {k: v.to(torch.bfloat16) if isinstance(v, torch.Tensor) else v for k, v in batch.items()}
+#         return batch
+#
+# # Load BioBERT
+# model = BertForMaskedLM.from_pretrained('dmis-lab/biobert-v1.1').to(torch.bfloat16)
+# tokenizer = BertTokenizer.from_pretrained('dmis-lab/biobert-v1.1')
+#
+# # Prepare the dataset
+# train_dataset = TextDataset(
+#     tokenizer=tokenizer,
+#     file_path="papers_data_mountain.txt",
+#     block_size=512)  # Adjust block_size if necessary
+#
+# data_collator = CustomDataCollatorForLanguageModeling(tokenizer=tokenizer, mlm=True)
+#
+# training_args = TrainingArguments(
+#     output_dir="./biobert-finetuned",
+#     overwrite_output_dir=True,
+#     num_train_epochs=4,
+#     per_device_train_batch_size=8,
+#     gradient_accumulation_steps=2,
+#     learning_rate=2e-4,
+#     save_steps=1_000,
+#     save_total_limit=3,
+#     logging_dir='./logs',
+#     logging_steps=50,
+#     fp16=False  # Ensure this is false since we're using bfloat16 manually
+# )
+#
+# trainer = Trainer(
+#     model=model,
+#     args=training_args,
+#     data_collator=data_collator,
+#     train_dataset=train_dataset,
+# )
+#
+# trainer.train()
+#
+# # Save model and tokenizer
+# model_path = "./saved_mountain_model_directory"
+# if not os.path.exists(model_path):
+#     os.makedirs(model_path)
+# model.save_pretrained(model_path)
+# tokenizer.save_pretrained(model_path)
+#
+# # Quantize the model
+# model.eval()  # Ensure the model is in evaluation mode
+# quantized_model = quantize_dynamic(model, {torch.nn.Linear}, dtype=torch.qint8)
+# quantized_model_path = "./quantized_model_directory"
+# if not os.path.exists(quantized_model_path):
+#     os.makedirs(quantized_model_path)
+# torch.save(quantized_model.state_dict(), os.path.join(quantized_model_path, 'quantized_mountain_model.pth'))
+
+from transformers import AutoModelForMaskedLM, AutoTokenizer, TextDataset, DataCollatorForLanguageModeling, Trainer, TrainingArguments
 import logging
 from transformers import logging as hf_logging
 import os
@@ -95,20 +165,21 @@ class CustomDataCollatorForLanguageModeling(DataCollatorForLanguageModeling):
         batch = {k: v.to(torch.bfloat16) if isinstance(v, torch.Tensor) else v for k, v in batch.items()}
         return batch
 
-# Load BioBERT
-model = BertForMaskedLM.from_pretrained('dmis-lab/biobert-v1.1').to(torch.bfloat16)
-tokenizer = BertTokenizer.from_pretrained('dmis-lab/biobert-v1.1')
+# Load model and tokenizer with AutoClasses
+model = AutoModelForMaskedLM.from_pretrained('microsoft/Phi-3-mini-4k-instruct').to(torch.bfloat16)
+tokenizer = AutoTokenizer.from_pretrained('microsoft/Phi-3-mini-4k-instruct')
 
 # Prepare the dataset
 train_dataset = TextDataset(
     tokenizer=tokenizer,
     file_path="papers_data_mountain.txt",
-    block_size=512)  # Adjust block_size if necessary
+    block_size=512)
 
-data_collator = CustomDataCollatorForLanguageModeling(tokenizer=tokenizer, mlm=True)
+data_collator = CustomDataCollatorForLanguageModeling(
+    tokenizer=tokenizer, mlm=True)
 
 training_args = TrainingArguments(
-    output_dir="./biobert-finetuned",
+    output_dir="./phi3-finetuned",
     overwrite_output_dir=True,
     num_train_epochs=4,
     per_device_train_batch_size=8,
@@ -131,7 +202,7 @@ trainer = Trainer(
 trainer.train()
 
 # Save model and tokenizer
-model_path = "./saved_mountain_model_directory"
+model_path = "./saved_phi3_model_directory"
 if not os.path.exists(model_path):
     os.makedirs(model_path)
 model.save_pretrained(model_path)
@@ -140,8 +211,10 @@ tokenizer.save_pretrained(model_path)
 # Quantize the model
 model.eval()  # Ensure the model is in evaluation mode
 quantized_model = quantize_dynamic(model, {torch.nn.Linear}, dtype=torch.qint8)
-quantized_model_path = "./quantized_model_directory"
+quantized_model_path = "./quantized_phi3_model_directory"
 if not os.path.exists(quantized_model_path):
     os.makedirs(quantized_model_path)
-torch.save(quantized_model.state_dict(), os.path.join(quantized_model_path, 'quantized_mountain_model.pth'))
+torch.save(quantized_model.state_dict(), os.path.join(quantized_model_path, 'quantized_phi3_model.pth'))
+
+
 
