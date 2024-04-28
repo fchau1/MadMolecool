@@ -29,7 +29,7 @@ def get_chemicals(compound):
 
             title_element = information_elements[0].find('{http://pubchem.ncbi.nlm.nih.gov/pug_rest}Title')
             title = title_element.text if title_element is not None else ""
-            
+
             if len(information_elements) > 1:
                 description_element = information_elements[1].find('{http://pubchem.ncbi.nlm.nih.gov/pug_rest}Description')
                 description = description_element.text if description_element is not None else ""
@@ -42,3 +42,14 @@ def get_chemicals(compound):
     else:
         return jsonify({'error': 'Could not retrieve data from PubChem'}), response.status_code
 
+
+
+@chemcyclopedia_routes.route('/chemcyclopedia/img/<string:compound>')
+def get_image(compound):
+    url = f"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/{compound}/PNG"
+
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.content, 200, {'Content-Type': 'image/png'}
+    else:
+        return jsonify({'error': 'Failed to fetch image'}), response.status_code
