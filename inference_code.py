@@ -1,7 +1,7 @@
-from openvino.inference_engine import IECore
+from openvino.runtime import Core
 import torch
 
-ie = IECore()
+ie = Core()
 net = ie.read_network(model='../ovc_output/converted_model.xml', weights='../ovc_output/converted_model.bin')
 exec_net = ie.load_network(network=net, device_name="CPU")
 
