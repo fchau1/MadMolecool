@@ -66,6 +66,6 @@ with open('papers_data_mountain.txt', 'w', encoding='utf-8') as file:
             file.write(
                 f"Prompt: Here is an example past experiment's abstract which tells you amongst other things the main results of what was studied, what methods do you think were used for it? {abstract_content}\n")
             file.write(
-                f"Completion: Here is what we may expect the methods section for such an experiment to look like. {method_content}\n\n")
+                f"Completion: {method_content}\n\n")
 
             current_papers += 1

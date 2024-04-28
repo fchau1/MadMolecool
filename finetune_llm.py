@@ -25,8 +25,8 @@ tokenizer = GPT2Tokenizer.from_pretrained('gpt2-xl')
 
 train_dataset = TextDataset(
     tokenizer=tokenizer,
-    file_path="papers_data_mountain.txt",
-    block_size=512)  # Increased block size for larger model
+    file_path="papers_data_big.txt",
+    block_size=1024)  # Increased block size for larger model
 
 # Instantiate the custom data collator
 data_collator = CustomDataCollatorForLanguageModeling(
@@ -37,7 +37,7 @@ training_args = TrainingArguments(
     output_dir="./gpt2-xl-finetuned",
     overwrite_output_dir=True,
     num_train_epochs=4,
-    per_device_train_batch_size=4,  # Adjusted for potential memory constraints
+    per_device_train_batch_size=8,  # Adjusted for potential memory constraints
     gradient_accumulation_steps=4,  # Increased accumulation to handle larger model size
     learning_rate=2e-4,
     save_steps=1_000,
