@@ -8,7 +8,7 @@ readme = "README.md"
 [[tool.poetry.source]]
 name = "pytorch"
 url = "https://download.pytorch.org/whl/cpu"
-default = false
+priority = "supplemental"
 
 [tool.poetry.dependencies]
 python = "^3.12"
@@ -16,10 +16,16 @@ flask = "^3.0.3"
 pymongo = "^4.7.0"
 flask-cors = "^4.0.0"
 transformers = "^4.40.1"
+<<<<<<< HEAD
 torch = {version = "^2.3.0+cpu", source = "pytorch"}
 torchvision = {version = "^0.18.0+cpu", source = "pytorch"}
 torchaudio = {version = "^2.3.0+cpu", source = "pytorch"}
 
+=======
+torch = "^2.3.0+cpu"
+torchvision = "^0.18.0+cpu"
+torchaudio = "^2.3.0+cpu"
+>>>>>>> refs/remotes/origin/main
 
 [tool.poetry.group.dev.dependencies]
 setuptools = "^69.5.1"
