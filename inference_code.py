@@ -1,16 +1,20 @@
 from openvino.runtime import Core
-import torch
+import numpy as np
 
+# Initialize the OpenVINO runtime Core
 ie = Core()
-net = ie.read_network(model='../ovc_output/converted_model.xml', weights='../ovc_output/converted_model.bin')
-exec_net = ie.load_network(network=net, device_name="CPU")
 
-# Prepare input
-input_ids = torch.randint(0, 50256, (1, 10)).numpy()
+# Load and compile the model for the CPU device
+compiled_model = ie.compile_model(model='../ovc_output/converted_model.xml', device_name="CPU")
+
+# Prepare input: assuming the input_ids is an integer array of token IDs
+input_ids = np.random.randint(0, 50256, (1, 10))
+
+# Create a dictionary for the inputs expected by the model
 inputs = {"input_ids": input_ids}
 
-# Run inference
-results = exec_net.infer(inputs=inputs)
+# Run inference and get the results
+results = compiled_model.infer(inputs=inputs)
 output = results['outputs']
 
 print("Inference results:", output)
