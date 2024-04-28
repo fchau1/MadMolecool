@@ -26,7 +26,7 @@ tokenizer = GPT2Tokenizer.from_pretrained('gpt2-xl')
 train_dataset = TextDataset(
     tokenizer=tokenizer,
     file_path="papers_data_newbig.txt",
-    block_size=1024)  # Increased block size for larger model
+    block_size=512)  # Increased block size for larger model
 
 # Instantiate the custom data collator
 data_collator = CustomDataCollatorForLanguageModeling(
