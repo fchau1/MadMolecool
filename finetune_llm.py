@@ -57,7 +57,7 @@ trainer = Trainer(
 trainer.train()
 
 # Save model and tokenizer
-model_path = "./saved_gpt2_small_nice_model_directory"
+model_path = "./saved_gpt2_medium_nice_model_directory"
 if not os.path.exists(model_path):
     os.makedirs(model_path)
 

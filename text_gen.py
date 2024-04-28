@@ -11,7 +11,7 @@ def generate_text(input_text, model, tokenizer):
     # Encode the input text
     input_ids = tokenizer.encode(input_text, return_tensors='pt')
     # Generate output from the model
-    output = model.generate(input_ids, max_length=250, num_return_sequences=1)
+    output = model.generate(input_ids, max_length=100, num_return_sequences=1)
     # Decode and print the output
     return tokenizer.decode(output[0], skip_special_tokens=True)
 
