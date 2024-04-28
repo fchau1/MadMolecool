@@ -20,13 +20,13 @@ class CustomDataCollatorForLanguageModeling(DataCollatorForLanguageModeling):
         return batch
 
 # Use GPT-2 XL
-model = GPT2LMHeadModel.from_pretrained('gpt2').to(torch.bfloat16)
-tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
+model = GPT2LMHeadModel.from_pretrained('gpt2-medium').to(torch.bfloat16)
+tokenizer = GPT2Tokenizer.from_pretrained('gpt2-medium')
 
 train_dataset = TextDataset(
     tokenizer=tokenizer,
     file_path="formatted_data_small.txt",
-    block_size=124)  # Increased block size for larger model
+    block_size=256)  # Increased block size for larger model
 
 # Instantiate the custom data collator
 data_collator = CustomDataCollatorForLanguageModeling(
@@ -34,7 +34,7 @@ data_collator = CustomDataCollatorForLanguageModeling(
 )
 
 training_args = TrainingArguments(
-    output_dir="./gpt2-small-finetuned",
+    output_dir="./gpt2-medium-finetuned",
     overwrite_output_dir=True,
     num_train_epochs=4,
     per_device_train_batch_size=4,  # Adjusted for potential memory constraints
@@ -70,7 +70,7 @@ quantized_model = quantize_dynamic(model, {torch.nn.Linear}, dtype=torch.qint8)
 quantized_model_path = "./quantized_model_directory"
 if not os.path.exists(quantized_model_path):
     os.makedirs(quantized_model_path)
-torch.save(quantized_model.state_dict(), os.path.join(quantized_model_path, 'quantized_nice_model.pth'))
+torch.save(quantized_model.state_dict(), os.path.join(quantized_model_path, 'quantized_nice_medium_model.pth'))
 
 
 # from transformers import BertForMaskedLM, BertTokenizer, TextDataset, DataCollatorForLanguageModeling, Trainer, TrainingArguments
