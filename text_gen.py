@@ -18,7 +18,7 @@ def generate_text(input_text, model, tokenizer):
 
 
 if __name__ == "__main__":
-    model_path = "./saved_small_model_directory"  # Adjust the path as needed
+    model_path = "./saved_biggest_model_directory"  # Adjust the path as needed
     model, tokenizer = load_model_and_tokenizer(model_path)
 
     # Ensure model is in eval mode
