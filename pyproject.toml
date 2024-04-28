@@ -22,6 +22,7 @@ torchaudio = {version = "^2.3.0+cpu", source = "pytorch"}
 bio = "^1.7.0"
 lxml = "^5.2.1"
 bs4 = "^0.0.2"
+accelerate = "^0.29.3"
 
 [tool.poetry.group.dev.dependencies]
 setuptools = "^69.5.1"
