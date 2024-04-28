@@ -157,21 +157,26 @@ class TextDataset(Dataset):
     def __init__(self, tokenizer, file_path, block_size=512):
         self.tokenizer = tokenizer
         self.block_size = block_size
+        self.input_ids = []
 
-        # Load and tokenize the text data
-        with open(file_path, encoding='utf-8') as f:
-            text = f.read()
-
-        self.tokens = tokenizer(text, add_special_tokens=True, truncation=True, max_length=block_size)['input_ids']
+        # Read and tokenize the file content in chunks
+        with open(file_path, 'r', encoding='utf-8') as f:
+            while True:
+                text = f.read(1024 * 1024)  # Read approximately 1MB of text at a time
+                if not text:
+                    break
+                tokens = tokenizer(text, add_special_tokens=True, truncation=True, max_length=block_size,
+                                   return_tensors="pt")
+                self.input_ids.extend(tokens.input_ids.tolist())
 
     def __len__(self):
-        return len(self.tokens) - self.block_size + 1  # Adjust this as necessary
+        return len(self.input_ids) - self.block_size
 
     def __getitem__(self, idx):
-        # Ensure that the sequence returned is of proper length
-        end_idx = min(idx + self.block_size, len(self.tokens))
-        item = self.tokens[idx:end_idx]
-        return torch.tensor(item, dtype=torch.long)
+        # Extract a sequence of tokens
+        input_ids = self.input_ids[idx:idx + self.block_size]
+        return {"input_ids": torch.tensor(input_ids, dtype=torch.long)}
+
 
 
 # Setup logging
@@ -187,6 +192,10 @@ model = Phi3Model(configuration).to(torch.bfloat16)
 # Load tokenizer
 tokenizer = AutoTokenizer.from_pretrained("microsoft/Phi-3-mini-4k-instruct")
 
+
+# Initialize the dataset
+train_dataset = TextDataset(tokenizer, "papers_data_mountain.txt", block_size=128)
+
 # Custom data collator function (simplified for generality)
 def custom_collate_fn(examples):
     batch = tokenizer.pad(
@@ -198,7 +207,6 @@ def custom_collate_fn(examples):
     batch = {k: v.to(torch.bfloat16) if isinstance(v, torch.Tensor) else v for k, v in batch.items()}
     return batch
 
-train_dataset = TextDataset(tokenizer, "papers_data_mountain.txt", block_size=128)
 
 training_args = TrainingArguments(
     output_dir="./phi3-finetuned",
