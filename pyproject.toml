@@ -16,6 +16,9 @@ flask = "^3.0.3"
 pymongo = "^4.7.0"
 flask-cors = "^4.0.0"
 transformers = "^4.40.1"
+torch = {version = "^2.3.0+cpu", source = "pytorch"}
+torchvision = {version = "^0.18.0+cpu", source = "pytorch"}
+torchaudio = {version = "^2.3.0+cpu", source = "pytorch"}
 
 
 [tool.poetry.group.dev.dependencies]
