@@ -41,8 +41,8 @@ def fetch_full_text(paper_id):
 
 # Fetch paper IDs
 query = "molecular biology[Title] AND open access[Filter]"
-max_papers = 10
-paper_ids = search_pmc_articles(query, max_papers*20)
+max_papers = 500
+paper_ids = search_pmc_articles(query, max_papers*10)
 
 # Open a file to write
 with open('papers_data.txt', 'w', encoding='utf-8') as file:
