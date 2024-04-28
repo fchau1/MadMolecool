@@ -5,7 +5,17 @@ import { useState} from "react";
 
 const fetchSearchResults = async (searchInput) => {
     try {
-        const response = await fetch(`http://127.0.0.1:5000/chemcyclopedia?name=${searchInput}`);
+        const response = await fetch(`http://127.0.0.1:5000/chemcyclopedia/${searchInput}`);
+        const {data} = await response.json()
+        return data
+    } catch (error) {
+        console.error('Error fetching search results:', error);
+    }
+};
+
+const fetchImg = async (searchInput) => {
+    try {
+        const response = await fetch(`http://127.0.0.1:5000/chemcyclopedia/${searchInput}`);
         const {data} = await response.json()
         return data
     } catch (error) {
@@ -16,11 +26,14 @@ const fetchSearchResults = async (searchInput) => {
 const Chemcyclopedia = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [searchResults, setSearchResults] = useState(null);
+    const[image, setImage] = useState(null);
 
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
         results = fetchSearchResults(searchTerm)
+        resultingImage = fetchImg(searchTerm)
         setSearchResults(searchResults)
+        setImage(resultingImage)
     };
 
     return (

@@ -20,7 +20,7 @@ function CreateNoteBook({user}) {
     const [notebookName, setNotebookName] = useState('');
     const [notebookHypothesis, setnotebookHypothesis] = useState('');
     const [imageFile, setImageFile] = useState(null);
-    const [uploadFile, setUploadFile] = useState(null);
+    const [uploadFiles, setUploadFiles] = useState([]);
     const [loading, setLoading] = useState(false); // Add loading state
 
     const handleNameChange = (event) => {
@@ -36,7 +36,8 @@ function CreateNoteBook({user}) {
     };
 
     const handleFileUpload = (event) => {
-        setUploadFile(event.target.files[0]);
+        const selectedFiles = Array.from(event.target.files);
+        setUploadFiles(selectedFiles);
     };
 
     const [open, setOpen] = useState(false);
@@ -152,6 +153,7 @@ function CreateNoteBook({user}) {
                             id="file-upload"
                             type="file"
                             onChange={handleFileUpload}
+                            multiple
                         />
                     </div>
                 </div>
