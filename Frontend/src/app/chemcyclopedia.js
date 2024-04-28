@@ -2,7 +2,6 @@
 "use client"
 
 import { useState} from "react";
-import SearchBar from './SearchBar';
 
 const fetchSearchResults = async (searchInput) => {
     try {
