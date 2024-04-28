@@ -150,6 +150,29 @@ import logging
 from transformers import logging as hf_logging
 import os
 import torch
+from torch.utils.data import Dataset
+
+
+class TextDataset(Dataset):
+    def __init__(self, tokenizer, file_path, block_size=512):
+        self.tokenizer = tokenizer
+        self.block_size = block_size
+
+        # Load and tokenize the text data
+        with open(file_path, encoding='utf-8') as f:
+            text = f.read()
+
+        self.tokens = tokenizer(text, add_special_tokens=True, truncation=True, max_length=block_size)['input_ids']
+
+    def __len__(self):
+        return len(self.tokens) - self.block_size + 1  # Adjust this as necessary
+
+    def __getitem__(self, idx):
+        # Ensure that the sequence returned is of proper length
+        end_idx = min(idx + self.block_size, len(self.tokens))
+        item = self.tokens[idx:end_idx]
+        return torch.tensor(item, dtype=torch.long)
+
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
@@ -170,14 +193,12 @@ def custom_collate_fn(examples):
         examples,
         return_tensors='pt',
         padding=True,
-        max_length=256
+        max_length=512
     )
     batch = {k: v.to(torch.bfloat16) if isinstance(v, torch.Tensor) else v for k, v in batch.items()}
     return batch
 
-# Prepare the dataset (Here you'll need to create a suitable dataset object)
-# Assuming 'papers_data_mountain.txt' contains text data
-train_dataset = tokenizer(text=open("papers_data_mountain.txt", encoding="utf-8").read(), return_tensors='pt', max_length=512, truncation=True, padding="max_length")
+train_dataset = TextDataset(tokenizer, "papers_data_mountain.txt", block_size=128)
 
 training_args = TrainingArguments(
     output_dir="./phi3-finetuned",
