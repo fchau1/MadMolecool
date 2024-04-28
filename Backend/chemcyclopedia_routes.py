@@ -53,3 +53,23 @@ def get_image(compound):
         return response.content, 200, {'Content-Type': 'image/png'}
     else:
         return jsonify({'error': 'Failed to fetch image'}), response.status_code
+
+from flask import Flask, jsonify
+import requests
+
+app = Flask(__name__)
+
+@app.route('/chemcyclopedia/molecular-weight/<string:compound>')
+def fetch_molecular_weight(compound):
+    url = f"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/{compound}/property/MolecularWeight/JSON"
+
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        data = response.json()
+        molecular_weight = data['PropertyTable']['Properties'][0]['MolecularWeight']
+
+        return jsonify({'molecular_weight': molecular_weight})
+    else:
+
+        return jsonify({'error': 'Failed to fetch molecular weight'}), response.status_code
