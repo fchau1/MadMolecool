@@ -20,8 +20,8 @@ class CustomDataCollatorForLanguageModeling(DataCollatorForLanguageModeling):
         return batch
 
 # Use GPT-2 XL
-model = GPT2LMHeadModel.from_pretrained('gpt2-small').to(torch.bfloat16)
-tokenizer = GPT2Tokenizer.from_pretrained('gpt2-small')
+model = GPT2LMHeadModel.from_pretrained('gpt2').to(torch.bfloat16)
+tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
 
 train_dataset = TextDataset(
     tokenizer=tokenizer,
@@ -34,7 +34,7 @@ data_collator = CustomDataCollatorForLanguageModeling(
 )
 
 training_args = TrainingArguments(
-    output_dir="./gpt2-xl-finetuned",
+    output_dir="./gpt2-small-finetuned",
     overwrite_output_dir=True,
     num_train_epochs=4,
     per_device_train_batch_size=4,  # Adjusted for potential memory constraints
