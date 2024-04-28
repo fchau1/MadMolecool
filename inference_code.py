@@ -13,8 +13,10 @@ input_ids = np.random.randint(0, 50256, (1, 10))
 # Create a dictionary for the inputs expected by the model
 inputs = {"input_ids": input_ids}
 
-# Run inference and get the results
-results = compiled_model.infer(inputs=inputs)
-output = results['outputs']
+# Create an infer request and start synchronous inference
+result = compiled_model.create_infer_request().infer(inputs=inputs)
+
+# Assuming 'outputs' is the correct output tensor name, replace it with the actual output name if different
+output = result.get_tensor('outputs').data
 
 print("Inference results:", output)
