@@ -2,7 +2,6 @@
 "use client"
 
 import { useState} from "react";
-import SearchBar from './SearchBar';
 
 const fetchSearchResults = async (searchInput) => {
     try {
@@ -26,8 +25,12 @@ const Chemcyclopedia = () => {
 
     return (
         <div className="container mx-auto mt-8">
-            <SearchBar placeholder="Search a chemical" handleChange={handleSearchChange} />
-
+            <input
+                type="search"
+                className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg py-2 px-4 block w-full appearance-none leading-normal"
+                placeholder="Search a chemical"
+                onChange={handleSearchChange}
+            />
             <div className="mt-4">
             {searchResults && searchResults.map((result, index) => (
                 <div key={index} className="border rounded p-4 mb-4">
