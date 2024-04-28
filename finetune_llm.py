@@ -145,11 +145,10 @@
 #     os.makedirs(quantized_model_path)
 # torch.save(quantized_model.state_dict(), os.path.join(quantized_model_path, 'quantized_mountain_model.pth'))
 
-from transformers import AutoModelForMaskedLM, AutoTokenizer, TextDataset, DataCollatorForLanguageModeling, Trainer, TrainingArguments
+from transformers import Phi3Model, Phi3Config, AutoTokenizer, Trainer, TrainingArguments
 import logging
 from transformers import logging as hf_logging
 import os
-from torch.quantization import quantize_dynamic
 import torch
 
 # Setup logging
@@ -158,25 +157,27 @@ hf_logging.set_verbosity_info()
 hf_logging.enable_default_handler()
 hf_logging.enable_explicit_format()
 
-# Define the custom data collator for masked language modeling
-class CustomDataCollatorForLanguageModeling(DataCollatorForLanguageModeling):
-    def collate_batch(self, features):
-        batch = super().collate_batch(features)
-        batch = {k: v.to(torch.bfloat16) if isinstance(v, torch.Tensor) else v for k, v in batch.items()}
-        return batch
+# Load Phi-3 model
+configuration = Phi3Config.from_pretrained("microsoft/Phi-3-mini-4k-instruct")
+model = Phi3Model(configuration).to(torch.bfloat16)
 
-# Load model and tokenizer with AutoClasses
-model = AutoModelForMaskedLM.from_pretrained('microsoft/Phi-3-mini-4k-instruct').to(torch.bfloat16)
-tokenizer = AutoTokenizer.from_pretrained('microsoft/Phi-3-mini-4k-instruct')
+# Load tokenizer
+tokenizer = AutoTokenizer.from_pretrained("microsoft/Phi-3-mini-4k-instruct")
 
-# Prepare the dataset
-train_dataset = TextDataset(
-    tokenizer=tokenizer,
-    file_path="papers_data_mountain.txt",
-    block_size=512)
+# Custom data collator function (simplified for generality)
+def custom_collate_fn(examples):
+    batch = tokenizer.pad(
+        examples,
+        return_tensors='pt',
+        padding=True,
+        max_length=512
+    )
+    batch = {k: v.to(torch.bfloat16) if isinstance(v, torch.Tensor) else v for k, v in batch.items()}
+    return batch
 
-data_collator = CustomDataCollatorForLanguageModeling(
-    tokenizer=tokenizer, mlm=True)
+# Prepare the dataset (Here you'll need to create a suitable dataset object)
+# Assuming 'papers_data_mountain.txt' contains text data
+train_dataset = tokenizer(text=open("papers_data_mountain.txt", encoding="utf-8").read(), return_tensors='pt', max_length=512, truncation=True, padding="max_length")
 
 training_args = TrainingArguments(
     output_dir="./phi3-finetuned",
@@ -189,13 +190,13 @@ training_args = TrainingArguments(
     save_total_limit=3,
     logging_dir='./logs',
     logging_steps=50,
-    fp16=False  # Ensure this is false since we're using bfloat16 manually
+    fp16=False  # bfloat16 usage is manual
 )
 
 trainer = Trainer(
     model=model,
     args=training_args,
-    data_collator=data_collator,
+    data_collator=custom_collate_fn,
     train_dataset=train_dataset,
 )
 
@@ -207,14 +208,6 @@ if not os.path.exists(model_path):
     os.makedirs(model_path)
 model.save_pretrained(model_path)
 tokenizer.save_pretrained(model_path)
-
-# Quantize the model
-model.eval()  # Ensure the model is in evaluation mode
-quantized_model = quantize_dynamic(model, {torch.nn.Linear}, dtype=torch.qint8)
-quantized_model_path = "./quantized_phi3_model_directory"
-if not os.path.exists(quantized_model_path):
-    os.makedirs(quantized_model_path)
-torch.save(quantized_model.state_dict(), os.path.join(quantized_model_path, 'quantized_phi3_model.pth'))
 
 
 
