@@ -1,9 +1,9 @@
 import torch
-from transformers import BertForMaskedLM, BertTokenizer
+from transformers import GPT2LMHeadModel, GPT2Tokenizer
 
 def load_model_and_tokenizer(model_path):
-    model = BertForMaskedLM.from_pretrained(model_path)
-    tokenizer = BertTokenizer.from_pretrained(model_path)
+    model = model = GPT2LMHeadModel.from_pretrained(model_path)
+    tokenizer = GPT2Tokenizer.from_pretrained(model_path)
     return model, tokenizer
 
 
