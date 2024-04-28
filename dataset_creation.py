@@ -41,11 +41,11 @@ def fetch_full_text(paper_id):
 
 # Fetch paper IDs
 query = "molecular biology[Title] AND open access[Filter]"
-max_papers = 100000
+max_papers = 1000
 paper_ids = search_pmc_articles(query, max_papers*20)
 
 # Open a file to write
-with open('papers_data_mountain.txt', 'w', encoding='utf-8') as file:
+with open('papers_data_newbig.txt', 'w', encoding='utf-8') as file:
     current_papers = 0
     for paper_id in paper_ids:
         if current_papers >= max_papers:
@@ -64,8 +64,8 @@ with open('papers_data_mountain.txt', 'w', encoding='utf-8') as file:
             method_content = clean_text(method_section.get_text())
 
             file.write(
-                f"Prompt: Here is an example past experiment's abstract which tells you amongst other things the main results of what was studied, what methods do you think were used for it? {abstract_content}\n")
+                f"Here is an example past experiment's abstract which tells you amongst other things the main results of what was studied, what methods do you think were used for it? {abstract_content}\n")
             file.write(
-                f"Completion: {method_content}\n\n")
+                f"{method_content}\n\n")
 
             current_papers += 1
