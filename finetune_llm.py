@@ -196,7 +196,7 @@ tokenizer = AutoTokenizer.from_pretrained("microsoft/Phi-3-mini-4k-instruct")
 
 
 # Initialize the dataset
-train_dataset = TextDataset(tokenizer, "papers_data_mountain.txt", block_size=128)
+train_dataset = TextDataset(tokenizer, "papers_data_mountain.txt", block_size=512)
 
 # Custom data collator function (simplified for generality)
 def custom_collate_fn(examples):
