@@ -2,38 +2,64 @@
 from flask import Flask, jsonify, request, Blueprint
 from pymongo import ReturnDocument
 from db_config import db
+import json
+from bson import ObjectId
 
 notebook_collection = db['Notebook']
 notebook_routes = Blueprint('notebook_routes', __name__)
 
-@notebook_routes.route('/notebooks/<string:user_id>')
-def get_notebooks(user_id):
+class JSONEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, ObjectId):
+            return str(o)
+        return json.JSONEncoder.default(self, o)
 
-    cursor = notebook_collection.find({'user_id': user_id})
-    notebooks = []
-    for notebook in cursor:
-        notebooks.append({
-            'name': notebook['name'],
-            'summary': notebook['summary'],
-            'text': notebook['text'],
-            'attachment_list': notebook['attachment_list'],
-            'user_id': notebook['user_id']
-        })
-    return jsonify(notebooks)
 
-@notebook_routes.route('/notebook/create', methods=['POST'])
+@notebook_routes.route('/notebooks', methods=['GET'])
+def get_notebooks():
+    user_id = request.args.get('user_id')
+
+    if not user_id:
+        return jsonify({"error": "User ID is required"}), 400
+
+    output = []
+    cursor = notebook_collection.find({"user_id": user_id})
+
+    for data in cursor:
+        data["_id"] = str(data["_id"])
+        output.append(data)
+
+    return jsonify({"data": output})
+
+@notebook_routes.route('/notebooks/findOne', methods=['GET'])
+def find_by_id_notebooks():
+    notebook_id = request.args.get('notebook_id')
+
+
+    # Use find_one instead of find to get a single document
+    data = notebook_collection.find_one({"_id": ObjectId(notebook_id)})
+
+    if data:  # Check if data is not None
+        data["_id"] = str(data["_id"])
+        return jsonify({"data": data})
+    else:
+        return jsonify({"message": "Notebook not found"}), 404
+
+
+@notebook_routes.route('/notebooks/create', methods=['POST'])
 def create_notebook():
     notebook = request.json
 
-    if 'name' not in notebook or 'summary' not in notebook or 'text' not in notebook or 'text' not in notebook or 'user_id' not in notebook:
+    if 'name' not in notebook and 'user_id' not in notebook:
         return jsonify({'error': 'Missing required fields'}), 400
+
 
     result = notebook_collection.insert_one(notebook)
 
     if result.inserted_id:
         return jsonify({'message': 'Notebook created successfully'}), 201
     else:
-        return jsonify({'message': 'Failed to create notebook'}), 500
+        return jsonify({'error': 'Failed to create notebook'}), 500
 
 @notebook_routes.route('/notebooks/update/<string:notebook_id>', methods=['PUT'])
 def update_notebook(notebook_id):
