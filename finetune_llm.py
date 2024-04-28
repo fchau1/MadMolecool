@@ -25,7 +25,7 @@ tokenizer = GPT2Tokenizer.from_pretrained('gpt2-xl')
 
 train_dataset = TextDataset(
     tokenizer=tokenizer,
-    file_path="papers_data_newbig.txt",
+    file_path="formatted_data.txt",
     block_size=256)  # Increased block size for larger model
 
 # Instantiate the custom data collator
@@ -57,7 +57,7 @@ trainer = Trainer(
 trainer.train()
 
 # Save model and tokenizer
-model_path = "./saved_gpt2_xl_newbig_model_directory"
+model_path = "./saved_gpt2_xl_nice_model_directory"
 if not os.path.exists(model_path):
     os.makedirs(model_path)
 
@@ -70,7 +70,7 @@ quantized_model = quantize_dynamic(model, {torch.nn.Linear}, dtype=torch.qint8)
 quantized_model_path = "./quantized_model_directory"
 if not os.path.exists(quantized_model_path):
     os.makedirs(quantized_model_path)
-torch.save(quantized_model.state_dict(), os.path.join(quantized_model_path, 'quantized_newbiggppt2_model.pth'))
+torch.save(quantized_model.state_dict(), os.path.join(quantized_model_path, 'quantized_nice_model.pth'))
 
 
 # from transformers import BertForMaskedLM, BertTokenizer, TextDataset, DataCollatorForLanguageModeling, Trainer, TrainingArguments
