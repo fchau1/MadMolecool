@@ -26,7 +26,7 @@ tokenizer = GPT2Tokenizer.from_pretrained('distilgpt2')
 
 train_dataset = TextDataset(
     tokenizer=tokenizer,
-    file_path="papers_data.txt",
+    file_path="papers_data_big.txt",
     block_size=256)
 
 # Instantiate the custom data collator
@@ -58,7 +58,7 @@ trainer = Trainer(
 trainer.train()
 
 # Save model and tokenizer
-model_path = "./saved_small_model_directory"
+model_path = "./saved_big_model_directory"
 
 # Check if the directory exists, and if not, create it
 if not os.path.exists(model_path):
@@ -73,4 +73,4 @@ quantized_model = quantize_dynamic(model, {torch.nn.Linear}, dtype=torch.qint8)
 quantized_model_path = "./quantized_model_directory"
 if not os.path.exists(quantized_model_path):
     os.makedirs(quantized_model_path)
-torch.save(quantized_model.state_dict(), os.path.join(quantized_model_path, 'quantized_small_model.pth'))
+torch.save(quantized_model.state_dict(), os.path.join(quantized_model_path, 'quantized_big_model.pth'))
