@@ -20,13 +20,13 @@ class CustomDataCollatorForLanguageModeling(DataCollatorForLanguageModeling):
         return batch
 
 # Use GPT-2 XL
-model = GPT2LMHeadModel.from_pretrained('gpt2-xl').to(torch.bfloat16)
-tokenizer = GPT2Tokenizer.from_pretrained('gpt2-xl')
+model = GPT2LMHeadModel.from_pretrained('gpt2-small').to(torch.bfloat16)
+tokenizer = GPT2Tokenizer.from_pretrained('gpt2-small')
 
 train_dataset = TextDataset(
     tokenizer=tokenizer,
-    file_path="formatted_data.txt",
-    block_size=256)  # Increased block size for larger model
+    file_path="formatted_data_small.txt",
+    block_size=124)  # Increased block size for larger model
 
 # Instantiate the custom data collator
 data_collator = CustomDataCollatorForLanguageModeling(
@@ -57,7 +57,7 @@ trainer = Trainer(
 trainer.train()
 
 # Save model and tokenizer
-model_path = "./saved_gpt2_xl_nice_model_directory"
+model_path = "./saved_gpt2_small_nice_model_directory"
 if not os.path.exists(model_path):
     os.makedirs(model_path)
 
