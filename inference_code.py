@@ -16,7 +16,8 @@ inputs = {"input_ids": input_ids}
 # Create an infer request and start synchronous inference
 result = compiled_model.create_infer_request().infer(inputs=inputs)
 
-# Assuming 'outputs' is the correct output tensor name, replace it with the actual output name if different
-output = result.get_tensor('outputs').data
+# Access output tensor data directly from the result using the appropriate output key
+# Replace 'outputs' with the actual name of your output tensor if it's different
+output = result['outputs']
 
 print("Inference results:", output)
