@@ -43,7 +43,7 @@ trainer = Trainer(
 trainer.train()
 
 # Save model and tokenizer
-model_path = "./saved_model_directory"
+model_path = "./saved_small_model_directory"
 
 # Check if the directory exists, and if not, create it
 if not os.path.exists(model_path):
