@@ -170,7 +170,7 @@ def custom_collate_fn(examples):
         examples,
         return_tensors='pt',
         padding=True,
-        max_length=512
+        max_length=256
     )
     batch = {k: v.to(torch.bfloat16) if isinstance(v, torch.Tensor) else v for k, v in batch.items()}
     return batch
