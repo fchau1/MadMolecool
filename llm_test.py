@@ -3,9 +3,12 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-# Load model and tokenizer
-tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
-model = GPT2LMHeadModel.from_pretrained('gpt2')
+# Path to your fine-tuned model
+model_path = './saved_gpt2_medium_nice_model_directory'
+
+# Load model and tokenizer from the specified path
+tokenizer = GPT2Tokenizer.from_pretrained(model_path)
+model = GPT2LMHeadModel.from_pretrained(model_path)
 
 @app.route('/predict', methods=['POST'])
 def predict():
