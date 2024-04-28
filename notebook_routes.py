@@ -1,3 +1,4 @@
+
 from flask import Flask, jsonify, request, Blueprint
 from pymongo import ReturnDocument
 from db_config import db
@@ -60,5 +61,3 @@ def delete_notebook(notebook_id):
     else:
         return jsonify({'message': 'Notebook not found'}), 404
 
-if __name__ == '__main__':
-    app.run(debug=True)
