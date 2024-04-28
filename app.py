@@ -1,8 +1,8 @@
 
 from flask import Flask
 from flask_cors import CORS
-from notebook_routes import notebook_routes
-from chemcyclopedia_routes import chemcyclopedia_routes
+from Backend.notebook_routes import notebook_routes
+from Backend.chemcyclopedia_routes import chemcyclopedia_routes
 
 app = Flask(__name__)
 CORS(app)
