@@ -35,7 +35,6 @@ def get_notebooks():
 def find_by_id_notebooks():
     notebook_id = request.args.get('notebook_id')
 
-
     # Use find_one instead of find to get a single document
     data = notebook_collection.find_one({"_id": ObjectId(notebook_id)})
 
@@ -63,16 +62,14 @@ def create_notebook():
 
 @notebook_routes.route('/notebooks/update/<string:notebook_id>', methods=['PUT'])
 def update_notebook(notebook_id):
-
     notebook = request.json
-
     updated_notebook = notebook_collection.find_one_and_update(
-        {'_id': notebook_id},
+        {'_id': ObjectId(notebook_id)},
         {'$set': notebook},
         return_document=ReturnDocument.AFTER
     )
-
     if updated_notebook:
+        updated_notebook["_id"] = str(updated_notebook["_id"])
         return jsonify({'message': 'Notebook updated successfully', 'notebook': updated_notebook}), 200
     else:
         return jsonify({'message': 'Notebook not found'}), 404
@@ -80,7 +77,7 @@ def update_notebook(notebook_id):
 @notebook_routes.route('/notebooks/delete/<string:notebook_id>', methods=['DELETE'])
 def delete_notebook(notebook_id):
 
-    result = notebook_collection.delete_one({'_id': notebook_id})
+    result = notebook_collection.delete_one({'_id': ObjectId(notebook_id)})
 
     if result.deleted_count > 0:
         return jsonify({'message': 'Notebook deleted successfully'}), 200

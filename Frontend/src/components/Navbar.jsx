@@ -2,7 +2,7 @@
 "use client"
 import Link from "next/link";
 import {withAuthInfo,useLogoutFunction, useRedirectFunctions} from "@propelauth/react";
-import {UserCog} from "lucide-react";
+import {UserCog, Notebook, TextSearch} from "lucide-react";
 import Image from "next/image";
 
 
@@ -20,7 +20,7 @@ const Navbar = ({isLoggedIn}) => {
                 {/*    Mad Molecool*/}
                 {/*</Link>*/}
 
-                <Image src={"/image.png"} width={200} height={150} alt={"navbar image for madmolecool"}/>
+                <Image src={"/image.png"} width={200} height={200} alt={"navbar image for madmolecool"}/>
 
                 {/*Mobile view*/}
 
@@ -31,15 +31,15 @@ const Navbar = ({isLoggedIn}) => {
                         {
                             isLoggedIn && (
                                 <>
-                                    <li>
-                                        <a href="/notebooks"
-                                           className="block py-2 px-3 md:p-0 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-green-700 dark:text-white md:dark:hover:text-green-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Notebooks</a>
-                                    </li>
+                                    <Link href={"/notebooks"} className="flex gap-1 items-center py-2 px-3 md:p-0 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-green-700 dark:text-white md:dark:hover:text-green-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
+                                        <Notebook className={"h-5 w-5"} />
+                                        Notebooks
+                                    </Link>
 
-                                    <li>
-                                        <a href="#"
-                                           className="block py-2 px-3 md:p-0 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-green-700 dark:text-white md:dark:hover:text-green-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Search Chemcyclopedia</a>
-                                    </li>
+                                    <Link className="flex gap-1 items-center py-2 px-3 md:p-0 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-green-700 dark:text-white md:dark:hover:text-green-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent" href={"/chemcyclopedia"}>
+                                        <TextSearch className={"h-5 w-5"} />
+                                        Chemcyclopedia
+                                    </Link>
                                 </>
                             )
                         }

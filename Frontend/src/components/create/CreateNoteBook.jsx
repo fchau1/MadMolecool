@@ -13,6 +13,7 @@ import {createNotebook} from "@/lib/actions";
 import toast from "react-hot-toast";
 import { useRouter} from "next/navigation";
 import {useQueryClient} from "@tanstack/react-query";
+import {getRandomColor, WriteGEMINISummary} from "@/lib/utils";
 
 function CreateNoteBook({user}) {
 
@@ -49,14 +50,20 @@ function CreateNoteBook({user}) {
         const notebookData = {
             name: notebookName,
             hypothesis: notebookHypothesis,
-            image: imageFile,
-            file: uploadFile,
+            design: "",
+            build: "",
+            learn: "",
+            test: "",
+            bgColor: getRandomColor(),
+            // image: imageFile,
+            // file: uploadFile,
             user_id: user.userId // You need to define getUserId() function to get user ID
         };
 
-        try {
+        const summaryGemini = await WriteGEMINISummary(JSON.stringify(notebookData))
 
-            const response = await createNotebook(notebookData)
+        try {
+            const response = await createNotebook({...notebookData, summary: summaryGemini})
             toast.success("Notebook created successfully")
             queryClient.invalidateQueries(`notebooks-${user.userId}`);
             closeDialog();

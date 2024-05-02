@@ -9,7 +9,7 @@ app = Flask(__name__)
 CORS(app)
 
 app.register_blueprint(notebook_routes)
-app.register_blueprint(chemcyclopedia_routes)
+app.register_blueprint(chemcyclopedia_routes)   
 app.register_blueprint(pubchem_routes)
 
 if __name__ == '__main__':

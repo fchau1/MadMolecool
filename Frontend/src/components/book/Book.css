@@ -1,0 +1,6 @@
+
+.book {
+    border-radius: 0 10px 10px 0;
+    border-left: 9px dotted white;
+    padding: 20px;
+}
