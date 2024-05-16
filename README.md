@@ -33,5 +33,3 @@ In these past 24 hours, we learned for the first time everything and anything to
 We hope that this project can serve as a stepping stool for other developers. The LLMs being hosted on the huggingface leaderboard allow for others to quickly and easily see and compare our work and the overall idea itself. Beefy LLM models have been made to advance the sciences in inorganic chemistry like CoScientist so we hope that our project can inspire similar efforts in organic chemistry.
 
 --- 
-
-Feel free to adjust formatting as needed!
